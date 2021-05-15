@@ -6,7 +6,6 @@ from io import BytesIO
 from flask import Flask
 from flask import send_from_directory
 from flask import request
-from flask_api import status
 from flasgger import Swagger
 from flask import redirect
 from flask import jsonify
@@ -112,7 +111,7 @@ def csv_aggregate_columns(groupbyop):
             format(content_type=content_type)
         log.info(wrong_method_log_msg)
         return jsonify({"content_type": content_type, 
-                "error_msg": wrong_method_log_msg}), status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+                "error_msg": wrong_method_log_msg})
 
     #Parse Query Parameters and Retrieve Values
     query_string = request.query_string
@@ -129,7 +128,7 @@ def csv_aggregate_columns(groupbyop):
         error_msg = "Query Parameter column or group_by not set"
         log.info(error_msg)
         return jsonify({"column": column, "group_by": group_by, 
-                "error_msg": error_msg}), status.HTTP_400_BAD_REQUEST
+                "error_msg": error_msg})
 
     #Load Plugins and grab correct one
     plugins = utils.plugins_map()
@@ -142,7 +141,7 @@ def csv_aggregate_columns(groupbyop):
     res = csvops.group_by_operations(data, 
         groupby_column_name=group_by, apply_column_name=column, func=appliable_func)
     log.info(res)
-    return res.to_json(), status.HTTP_200_OK
+    return res.to_json()
 
 
 if __name__ == "__main__": # pragma: no cover
